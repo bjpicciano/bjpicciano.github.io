@@ -1,4 +1,9 @@
 function Skall (game, index, player, x, y) {
+    if (x == null && y == null) {
+        x = game.world.randomX;
+        y = game.world.randomY;
+    }
+    
     this.game = game;
     
     this.player = player;
@@ -20,13 +25,15 @@ function Skall (game, index, player, x, y) {
 
 Skall.prototype = {
     update: function () {
-        // game.physics.arcade.collide(this.sprite, this.player.sprite);
+        this.updatePhysics();
         this.idle();
     },
     
-    //can't access gameState.layer for some reason, TEMP FIX
-    collideWithTilemapLayer: function (layer) {
-        game.physics.arcade.collide(this.sprite, layer);
+    updatePhysics: function () {
+        game.physics.arcade.collide(this.sprite, game.state.getCurrentState().layer[1]);
+        game.physics.arcade.collide(game.state.getCurrentState().enemies);
+
+        // game.physics.arcade.collide(this.sprite, this.player.sprite);
     },
     
     idle: function () {

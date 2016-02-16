@@ -2,7 +2,7 @@ function Player (game, x, y) {
     this.game = game;
     
     this.properties = {
-        velocity: 200,
+        velocity: 700,
         health: 5,
     };
     
@@ -10,7 +10,11 @@ function Player (game, x, y) {
     this.sprite.anchor.set(0.5, 0.5); 
     
     game.camera.follow(this.sprite);
+    //does collide with world's bounds
+    // game.camera.bounds = false;
+    
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+    // game.physics.p2.enable(this.sprite);
 }
 
 Player.prototype = {
@@ -21,31 +25,25 @@ Player.prototype = {
     },
     
     updatePhysics: function () {
-        game.world.wrap(this.sprite, gameProperties.padding);
-    },
-    
-    //can't access gameState.layer for some reason, TEMP FIX
-    collideWithTilemapLayer: function (layer) {
-        game.physics.arcade.collide(this.sprite, layer);
+        // game.world.wrap(this.sprite, gameProperties.padding);
+        game.physics.arcade.collide(this.sprite, game.state.getCurrentState().layer[1]);
     },
     
     checkPlayerInput: function () {
-        if (gameState.key_up.isDown) {
+        if (game.state.getCurrentState().keys.key_up.isDown) {           //Up  W
             this.sprite.body.velocity.y = -this.properties.velocity;
-        } else if (gameState.key_down.isDown) {
+        } else if (game.state.getCurrentState().keys.key_down.isDown) {  //Down  D
             this.sprite.body.velocity.y = this.properties.velocity;
         } else {
            this.sprite.body.velocity.y = 0;
         }
         
-        if (gameState.key_right.isDown) {
+        if (game.state.getCurrentState().keys.key_right.isDown) {        //Right  D
            this.sprite.body.velocity.x = this.properties.velocity;
-        } else if (gameState.key_left.isDown) {
+        } else if (game.state.getCurrentState().keys.key_left.isDown) {  //Left  A
            this.sprite.body.velocity.x = -this.properties.velocity;
         } else {
             this.sprite.body.velocity.x = 0;
         }
     },
-    
-    
 }
