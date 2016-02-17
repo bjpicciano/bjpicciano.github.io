@@ -22,7 +22,7 @@ mainState.prototype = {
     },
     
     create: function () {
-        var startInstructions = 'W\nA    S    D\n\nor\n\n click to move';
+        var startInstructions = 'W\nA    S    D\n\n\n click to start';
         
         this.tf_start = game.add.text(game.world.centerX, game.world.centerY, startInstructions, fontAssets.counterFontStyle);
         this.tf_start.anchor.set(0.5, 0.5);
