@@ -2,7 +2,9 @@ function Player (game, x, y) {
     this.game = game;
     
     this.properties = {
-        velocity: 700,
+        velocityStart: 300,
+        velocitySprint: 350,
+        velocity: 300,
         health: 5,
     };
     
@@ -44,6 +46,12 @@ Player.prototype = {
            this.sprite.body.velocity.x = -this.properties.velocity;
         } else {
             this.sprite.body.velocity.x = 0;
+        }
+        
+        if (game.state.getCurrentState().keys.key_sprint.isDown) {
+            this.properties.velocity = this.properties.velocitySprint;
+        } else {
+            this.properties.velocity = this.properties.velocityStart;
         }
     },
 }

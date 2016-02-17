@@ -7,6 +7,7 @@ var level1 = function (game) {
     
     this.map;
     this.layer = {};
+    this.color = 0x9933FF;
     this.edgeUp;
     this.edgeDown;
     this.edgeLeft;
@@ -44,8 +45,8 @@ level1.prototype = {
     create: function () {
         this.initGraphics();
         this.initPhysics();
-        initKeyboard(this);
         this.initEntities();
+        initBackground(this, this.color);
     },
     
     update: function () {
@@ -65,8 +66,8 @@ level1.prototype = {
         
         //#610B0B - dark red
         //#585 - light green
-        var color = '#';
-        initLevelGraphics(this, color);
+        var saturation = '#333333';
+        initLevelGraphics(this, saturation);
         
         //scale options
         // self.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -82,7 +83,7 @@ level1.prototype = {
     initEntities: function () {
         initPlayer(this, this.spawnX, this.spawnY);
         
-        var enemyCount = 10;
+        var enemyCount = 1;
         for (var i = 0; i < enemyCount; i++) {
             var x;
             var y;

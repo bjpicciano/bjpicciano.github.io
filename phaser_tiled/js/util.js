@@ -3,15 +3,12 @@ function initKeyboard (self) {
     self.keys.key_right = game.input.keyboard.addKey(Phaser.Keyboard.D);
     self.keys.key_up = game.input.keyboard.addKey(Phaser.Keyboard.W);
     self.keys.key_down = game.input.keyboard.addKey(Phaser.Keyboard.S);
+    self.keys.key_sprint = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
     
     game.input.resetLocked = true;
 };
 
-function initLevelGraphics (self, color) {
-    if (color) {
-        self.game.stage.backgroundColor = color;
-    }
-    
+function initLevelGraphics (self, color) {    
     //the first parameter is the tileset name, as specified in the Tiled map editor (and in the tilemap json file)
     //the second parameter maps this name to the Phaser.Cache key 'tiles'
     self.map.addTilesetImage(graphicAssets.protoTiles.name, graphicAssets.protoTiles.name);
@@ -27,6 +24,20 @@ function initLevelGraphics (self, color) {
     self.tf_score = game.add.text(game.width * .985, game.height * .01, self.score, fontAssets.counterFontStyle);
     self.tf_score.align = 'right';
     self.tf_score.anchor.set(1, 0);
+    
+    if (color != null) {
+        self.game.stage.backgroundColor = color;
+    }
+};
+
+
+function initBackground (self, color) {
+    self.backgroundSprite = game.add.sprite(0, 0, graphicAssets.background.name);
+    self.backgroundSprite.width = game.width;
+    self.backgroundSprite.height = game.height;
+
+    self.backgroundSprite.tint = color;
+    self.backgroundSprite.alpha = 0.4;
 };
 
 function initLevelPhysics (self) {
@@ -39,15 +50,14 @@ function initPlayer (self, x, y) {
     if ((x != null) && (y != null)) {
         self.player = new Player(game, x, y);
     } else {        
-        var randX = Math.round(Math.random() * game.world.width);
-        var randY = Math.round(Math.random() * game.world.width);
+        var randX = game.rnd.integerInRange(1, game.world.width - 1);
+        var randY = game.rnd.integerInRange(1, game.world.height - 1);
         self.player = new Player(game, randX, randY);
     }
 };
 
 function getRemainingLevels () {
-    var randomLevelIndex = Math.round(Math.random() * (states.levels.length - 1));
-    
+    var randomLevelIndex = game.rnd.integerInRange(0, states.levels.length - 1);
     var nextLevel = states.levels[randomLevelIndex];
     states.levels.splice(randomLevelIndex, 1);
     

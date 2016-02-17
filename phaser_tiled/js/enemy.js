@@ -11,9 +11,12 @@ function Skall (game, index, player, x, y) {
     this.properties = {
         startX: x,
         startY: y,
-        velocity: 100,
+        velocityStart: 100,
         velocityCharge: 300,
-        fov: 300,
+        velocityLeap: 600,
+        velocity: 100,
+        fov: 400,
+        leapFov: 120,
     };
     
     this.sprite = game.add.sprite(x, y, graphicAssets.skall.name);
@@ -27,6 +30,8 @@ Skall.prototype = {
     update: function () {
         this.updatePhysics();
         this.idle();
+        
+        console.log(this.properties.leapCooldown);
     },
     
     updatePhysics: function () {
@@ -37,7 +42,7 @@ Skall.prototype = {
     },
     
     idle: function () {
-        if (this.isWithin(this.properties.fov/2.5, this.player.sprite)) {
+        if (this.isWithin(this.properties.leapFov, this.player.sprite)) {
             this.follow(this.player.sprite, this.properties.velocityCharge);
         } else if (this.isWithin(this.properties.fov, this.player.sprite)) {
             this.follow(this.player.sprite, this.properties.velocity);

@@ -7,6 +7,7 @@ var level2 = function (game) {
     
     this.map;
     this.layer = {};
+    this.color = 0x009933;
     this.edgeUp;
     this.edgeDown;
     this.edgeLeft;
@@ -45,6 +46,7 @@ level2.prototype = {
         this.initGraphics();
         this.initPhysics();
         this.initEntities();
+        initBackground(this, this.color);
     },
     
     update: function () {
@@ -64,8 +66,8 @@ level2.prototype = {
         
         //#610B0B - dark red
         //#585 - light green
-        var color = '#';
-        initLevelGraphics(this, color);
+        var saturation = '#333333';
+        initLevelGraphics(this, saturation);
     },
     
     initPhysics: function () {
@@ -75,7 +77,7 @@ level2.prototype = {
     initEntities: function () {
         initPlayer(this, this.spawnX, this.spawnY);
         
-        var enemyCount = 10;
+        var enemyCount = 1;
         for (var i = 0; i < enemyCount; i++) {
             var x = game.world.randomX;
             var y = game.world.randomY;
