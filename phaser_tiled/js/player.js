@@ -32,17 +32,17 @@ Player.prototype = {
     },
     
     checkPlayerInput: function () {
-        if (game.state.getCurrentState().keys.key_up.isDown) {           //Up  W
+        if ((game.state.getCurrentState().keys.key_up.isDown) && (this.sprite.y >= -gameProperties.padding)) {           //Up  W
             this.sprite.body.velocity.y = -this.properties.velocity;
-        } else if (game.state.getCurrentState().keys.key_down.isDown) {  //Down  D
+        } else if ((game.state.getCurrentState().keys.key_down.isDown) && (this.sprite.y <= game.world.height + gameProperties.padding)) {  //Down  D
             this.sprite.body.velocity.y = this.properties.velocity;
         } else {
         this.sprite.body.velocity.y = 0;
         }
         
-        if (game.state.getCurrentState().keys.key_right.isDown) {        //Right  D
+        if ((game.state.getCurrentState().keys.key_right.isDown) && (this.sprite.x <= game.world.width + gameProperties.padding)) {        //Right  D
         this.sprite.body.velocity.x = this.properties.velocity;
-        } else if (game.state.getCurrentState().keys.key_left.isDown) {  //Left  A
+        } else if ((game.state.getCurrentState().keys.key_left.isDown) && (this.sprite.x >= -gameProperties.padding)) {  //Left  A
         this.sprite.body.velocity.x = -this.properties.velocity;
         } else {
             this.sprite.body.velocity.x = 0;
