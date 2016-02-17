@@ -1,8 +1,10 @@
 var gameProperties = {
-    screenWidth: 800,
-    screenHeight: 608,
+    screenWidth: window.innerWidth,// *  window.devicePixelRatio,
+    screenHeight: window.innerheight,// *  window.devicePixelRatio,
     
     padding: 15,
+    
+    type: null,
     
     delayToStartLevel: 3,
 };

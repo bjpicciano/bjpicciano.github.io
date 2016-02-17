@@ -33,8 +33,8 @@ function initLevelGraphics (self, color) {
 
 function initBackground (self, color) {
     self.backgroundSprite = game.add.sprite(0, 0, graphicAssets.background.name);
-    self.backgroundSprite.width = game.width;
-    self.backgroundSprite.height = game.height;
+    self.backgroundSprite.width = game.world.width;
+    self.backgroundSprite.height = game.world.height;
 
     self.backgroundSprite.tint = color;
     self.backgroundSprite.alpha = 0.4;

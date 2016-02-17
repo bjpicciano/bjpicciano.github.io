@@ -6,6 +6,9 @@ var mainState = function(game){
         key_down: null,
         key_left: null,
         key_right: null,
+        
+        key_gameKey: null,
+        key_gameClick: null,
     }
 };
 
@@ -21,8 +24,18 @@ mainState.prototype = {
         game.load.image(graphicAssets.protoTiles.name, graphicAssets.protoTiles.URL);
     },
     
+    update: function () {
+        if (this.keys.key_gameKey.isDown) {
+            initKeyboard(this);
+            this.startGameKey();
+        } else if (this.keys.key_gameClick.isDown) {
+            this.keys.key_up = game.input.activePointer;
+            this.startGameClick();
+        }
+    },
+    
     create: function () {
-        var startInstructions = 'Click to Start\n\nW\nA    S    D\n\n to move\n\n Shift to sprint';
+        var startInstructions = 'W\nA    S    D\n\nor\n\n click to move';
         
         this.tf_start = game.add.text(game.world.centerX, game.world.centerY, startInstructions, fontAssets.counterFontStyle);
         this.tf_start.anchor.set(0.5, 0.5);
@@ -31,12 +44,22 @@ mainState.prototype = {
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
         
-        initKeyboard(this);
-        game.input.onDown.addOnce(this.startGame, this);
+
+        this.keys.key_gameKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.keys.key_gameClick = game.input.activePointer;
+        // game.input.onDown.addOnce(this.startGameClick, this);
+        // game.input.onDown.addOnce(this.startGameClick, this);
         // this.startGame();
     },
     
-    startGame: function () {
+    startGameClick: function () {
+        gameProperties.type = "MOB";
+        var startState = getRemainingLevels();
+        game.state.start(startState, true, false, this.keys);
+    },
+    
+    startGameKey: function () {
+        gameProperties.type = "PC";
         var startState = getRemainingLevels();
         game.state.start(startState, true, false, this.keys);
     },
