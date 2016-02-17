@@ -32,35 +32,26 @@ Player.prototype = {
     },
     
     checkPlayerInput: function () {
-        if (gameProperties.type == "PC") {
-            if (game.state.getCurrentState().keys.key_up.isDown) {           //Up  W
-                this.sprite.body.velocity.y = -this.properties.velocity;
-            } else if (game.state.getCurrentState().keys.key_down.isDown) {  //Down  D
-                this.sprite.body.velocity.y = this.properties.velocity;
-            } else {
-            this.sprite.body.velocity.y = 0;
-            }
-            
-            if (game.state.getCurrentState().keys.key_right.isDown) {        //Right  D
-            this.sprite.body.velocity.x = this.properties.velocity;
-            } else if (game.state.getCurrentState().keys.key_left.isDown) {  //Left  A
-            this.sprite.body.velocity.x = -this.properties.velocity;
-            } else {
-                this.sprite.body.velocity.x = 0;
-            }
-            
-            if (game.state.getCurrentState().keys.key_sprint.isDown) {
-                this.properties.velocity = this.properties.velocitySprint;
-            } else {
-                this.properties.velocity = this.properties.velocityStart;
-            }
-        } else if (gameProperties.type == "MOB") {
-            if (game.state.getCurrentState().keys.key_up.isDown) {
-                game.physics.arcade.moveToPointer(this.sprite, this.properties.velocity);
-            } else {
-                this.sprite.body.velocity.x = 0;
-                this.sprite.body.velocity.y = 0;
-            }
+        if (game.state.getCurrentState().keys.key_up.isDown) {           //Up  W
+            this.sprite.body.velocity.y = -this.properties.velocity;
+        } else if (game.state.getCurrentState().keys.key_down.isDown) {  //Down  D
+            this.sprite.body.velocity.y = this.properties.velocity;
+        } else {
+        this.sprite.body.velocity.y = 0;
+        }
+        
+        if (game.state.getCurrentState().keys.key_right.isDown) {        //Right  D
+        this.sprite.body.velocity.x = this.properties.velocity;
+        } else if (game.state.getCurrentState().keys.key_left.isDown) {  //Left  A
+        this.sprite.body.velocity.x = -this.properties.velocity;
+        } else {
+            this.sprite.body.velocity.x = 0;
+        }
+        
+        if (game.state.getCurrentState().keys.key_sprint.isDown) {      //shift
+            this.properties.velocity = this.properties.velocitySprint;
+        } else {
+            this.properties.velocity = this.properties.velocityStart;
         }
     },
 }

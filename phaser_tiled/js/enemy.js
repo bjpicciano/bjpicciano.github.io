@@ -30,8 +30,6 @@ Skall.prototype = {
     update: function () {
         this.updatePhysics();
         this.idle();
-        
-        console.log(this.properties.leapCooldown);
     },
     
     updatePhysics: function () {
