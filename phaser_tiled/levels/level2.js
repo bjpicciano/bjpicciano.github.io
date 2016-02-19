@@ -14,13 +14,6 @@ var level2 = function (game) {
     this.edgeRight;
     
     this.score;
-    
-    this.keys = {
-        key_up: null,
-        key_down: null,
-        key_left: null,
-        key_right: null,
-    }
 };
 
 level2.prototype = {
@@ -92,4 +85,4 @@ level2.prototype = {
 };
 
 //links the name 'level2' to the gameState
-game.state.add(states.level2, level2);
+// game.state.add(states.level2, level2);

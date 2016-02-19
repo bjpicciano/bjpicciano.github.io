@@ -4,6 +4,7 @@ function initKeyboard (self) {
     self.keys.key_up = game.input.keyboard.addKey(Phaser.Keyboard.W);
     self.keys.key_down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     self.keys.key_sprint = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+    self.keys.key_attack = game.input.activePointer;
     
     game.input.resetLocked = true;
 };
@@ -24,6 +25,10 @@ function initLevelGraphics (self, color) {
     self.tf_score = game.add.text(game.width * .985, game.height * .01, self.score, fontAssets.counterFontStyle);
     self.tf_score.align = 'right';
     self.tf_score.anchor.set(1, 0);
+    
+    if (self.debug) {
+        self.layer[1].debug = true;
+    }
     
     if (color != null) {
         self.game.stage.backgroundColor = color;
@@ -98,8 +103,10 @@ function checkBoundaries (self) {
             self.edgeLeft = getRemainingLevels();
         }
 
-        //param2: clear world data , param3: clear cache data, extra custom data
-        game.state.start(self.edgeLeft, true, false, self.keys, stateData);
+        if (self.edgeLeft != null) {
+            //param2: clear world data , param3: clear cache data, extra custom data
+            game.state.start(self.edgeLeft, true, false, self.keys, stateData);
+        }
     } else if (sprite.x - gameProperties.padding > game.world.width) { //right
         stateData = {
             spawnX: -gameProperties.padding,
@@ -112,8 +119,10 @@ function checkBoundaries (self) {
             self.edgeRight = getRemainingLevels();
         }
 
-        //param2: clear world data , param3: clear cache data, extra custom data
-        game.state.start(self.edgeRight, true, false, self.keys, stateData);
+        if (self.edgeRight != null) {
+            //param2: clear world data , param3: clear cache data, extra custom data
+            game.state.start(self.edgeRight, true, false, self.keys, stateData);
+        }
     } 
 
     if (sprite.y + gameProperties.padding < 0) { //up
@@ -128,8 +137,10 @@ function checkBoundaries (self) {
             self.edgeUp = getRemainingLevels();
         }
 
-        //param2: clear world data , param3: clear cache data, extra custom data
-        game.state.start(self.edgeUp, true, false, self.keys, stateData);
+        if (self.edgeUp != null) {
+            //param2: clear world data , param3: clear cache data, extra custom data
+            game.state.start(self.edgeUp, true, false, self.keys, stateData);
+        }
     } else if (sprite.y - gameProperties.padding > game.world.height) { //down
         stateData = {
             spawnX: sprite.x,
@@ -142,7 +153,10 @@ function checkBoundaries (self) {
             self.edgeDown = getRemainingLevels();
         }
 
-        //param2: clear world data , param3: clear cache data, extra custom data
-        game.state.start(self.edgeDown, true, false, self.keys, stateData);
+        if (self.edgeDown != null) {
+            //param2: clear world data , param3: clear cache data, extra custom data
+            game.state.start(self.edgeDown, true, false, self.keys, stateData);
+        }
     }
 };
+

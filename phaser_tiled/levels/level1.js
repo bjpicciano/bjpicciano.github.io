@@ -1,4 +1,7 @@
 var level1 = function (game) {
+    this.game = game;
+    this.debug = false;
+    
     this.enemies = [];
     
     this.player;
@@ -14,13 +17,6 @@ var level1 = function (game) {
     this.edgeRight;
     
     this.score;
-    
-    this.keys = {
-        key_up: null,
-        key_down: null,
-        key_left: null,
-        key_right: null,
-    }
 };
 
 level1.prototype = {
@@ -42,6 +38,20 @@ level1.prototype = {
         this.score = 0;
     },
     
+    render: function () {
+        if (this.debug) {
+            game.debug.spriteInfo(this.player.swordSprite, 32, 32);
+            game.debug.body(this.player.sprite);
+            game.debug.body(this.player.swordSprite);
+
+            for (var i = 0; i < this.enemies.length; i++) {
+                if (this.enemies[i].sprite.alive) {
+                    game.debug.body(this.enemies[i].sprite);
+                }
+            }
+        }
+    },
+    
     create: function () {
         this.initGraphics();
         this.initPhysics();
@@ -56,8 +66,13 @@ level1.prototype = {
         for (var i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].sprite.alive) {
                 this.enemies[i].update();
+                game.physics.arcade.overlap(this.player.swordSprite, this.enemies[i].sprite, this.collision, null, this);
             }
         }
+    },
+    
+    collision: function (hitter, hitee) {
+        hitee.kill();
     },
     
     initGraphics: function () {
@@ -83,7 +98,7 @@ level1.prototype = {
     initEntities: function () {
         initPlayer(this, this.spawnX, this.spawnY);
         
-        var enemyCount = 1;
+        var enemyCount = 5;
         for (var i = 0; i < enemyCount; i++) {
             var x;
             var y;

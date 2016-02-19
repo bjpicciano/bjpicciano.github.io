@@ -15,6 +15,7 @@ mainState.prototype = {
         //sprite
         game.load.image(graphicAssets.background.name, graphicAssets.background.URL);
         game.load.image(graphicAssets.player.name, graphicAssets.player.URL);
+        game.load.image(graphicAssets.sword.name, graphicAssets.sword.URL);
         game.load.image(graphicAssets.skall.name, graphicAssets.skall.URL);
         
         //tilemap
@@ -22,19 +23,18 @@ mainState.prototype = {
     },
     
     create: function () {
-        var startInstructions = 'W\nA    S    D\n\n\n click to start';
+        // var startInstructions = 'W\nA    S    D\n\n\n click to start';
         
-        this.tf_start = game.add.text(game.world.centerX, game.world.centerY, startInstructions, fontAssets.counterFontStyle);
-        this.tf_start.anchor.set(0.5, 0.5);
+        // this.tf_start = game.add.text(game.world.centerX, game.world.centerY, startInstructions, fontAssets.counterFontStyle);
+        // this.tf_start.anchor.set(0.5, 0.5);
         
         //have the game centered horizontally
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
         
         initKeyboard(this);
-        game.input.onDown.addOnce(this.startGame, this);
-        // game.input.onDown.addOnce(this.startGameClick, this);
-        // this.startGame();
+        // game.input.onDown.addOnce(this.startGame, this);
+        this.startGame();
     },
     
     startGame: function () {
