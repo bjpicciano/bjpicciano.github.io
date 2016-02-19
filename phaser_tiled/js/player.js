@@ -65,7 +65,9 @@ Player.prototype = {
             this.properties.velocity = this.properties.velocityStart;
         }
         
-        if ((game.state.getCurrentState().keys.key_attack.isDown)) {      //shift
+        if (game.state.getCurrentState().keys.key_attack.isDown) {      //shift
+            this.attack();
+        } if (game.state.getCurrentState().keys.key_control.isDown) {
             this.attack();
         }
     },
