@@ -8,6 +8,7 @@ var gameProperties = {
 };
 
 var states = {
+    start: "",
     main: "main",
     level1: "level1",
     level2: "level2",
@@ -18,6 +19,9 @@ var states = {
     level7: "level7",
     level8: "level8",
     level9: "level9",
+    level10: "level10",
+    level11: "level11",
+    level12: "level12",
     
     levels: [],
 };
@@ -39,9 +43,10 @@ var graphicAssets = {
     
     //tilemaps
     protoTiles: {URL:'assets/protoTiles.png', name:'protoTiles'},
-    level1: {URL:'states/json/1.json', name:'level1'},
-    level2: {URL:'states/json/2.json', name:'level2'},
-    level4: {URL:'states/json/4.json', name:'level4'},
+    level1: {URL:'states/json/1b.json', name:'level1'},
+    level2: {URL:'states/json/2b.json', name:'level2'},
+    level3: {URL:'states/json/3b.json', name:'level3'},
+    level4: {URL:'states/json/4a.json', name:'level4'},
 };
 
 var fontAssets = {

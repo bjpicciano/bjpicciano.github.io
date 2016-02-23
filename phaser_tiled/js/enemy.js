@@ -1,13 +1,13 @@
-function Skall (game, index, player, x, y) {
-    if (x == null && y == null) {
-        x = game.world.randomX;
-        y = game.world.randomY;
-    }
-    
-    this.game = game;
-    
-    this.player = player;
-    
+var Skall = function (game, x, y, key, frame) {
+    if (x == undefined) { x = game.world.randomX; }
+    if (y == undefined) { y = game.world.randomY; }
+    if (key == undefined) { key = graphicAssets.skall.name; }
+    if (game.state.getCurrentState().player) { this.player = game.state.getCurrentState().player; }
+
+    //call the Phaser.Sprite passing in the game reference
+    Phaser.Sprite.call(this, game, x, y, key);
+    this.anchor.setTo(0.5, 0.5);
+
     this.properties = {
         startX: x,
         startY: y,
@@ -17,48 +17,73 @@ function Skall (game, index, player, x, y) {
         velocity: 100,
         fov: 400,
         leapFov: 120,
+        damage: 1,
+        health: 5,
+        canDamage: true,
+        canDamageTimer: 200,
     };
-    
-    this.sprite = game.add.sprite(x, y, graphicAssets.skall.name);
-    this.sprite.anchor.set(0.5, 0.5);
-    this.sprite.name = index;
-    
-    game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-}
 
-Skall.prototype = {
-    update: function () {
-        this.updatePhysics();
+    game.add.existing(this);
+    
+    game.physics.enable(this, Phaser.Physics.ARCADE);
+};
+
+Skall.prototype = Object.create(Phaser.Sprite.prototype);
+Skall.prototype.constructor = Skall;
+
+Skall.prototype.update = function () {
+    this.updatePhysics();
+    
+    if (this.player) {
         this.idle();
-    },
-    
-    updatePhysics: function () {
-        game.physics.arcade.collide(this.sprite, game.state.getCurrentState().layer[1]);
-        game.physics.arcade.collide(game.state.getCurrentState().enemies);
+    }
+};
 
-        // game.physics.arcade.collide(this.sprite, this.player.sprite);
-    },
+Skall.prototype.updatePhysics = function () {
+    game.physics.arcade.collide(this, game.state.getCurrentState().layer[1]);
+    game.physics.arcade.collide(this, game.state.getCurrentState().enemies);
     
-    idle: function () {
-        if (this.isWithin(this.properties.leapFov, this.player.sprite)) {
-            this.follow(this.player.sprite, this.properties.velocityCharge);
-        } else if (this.isWithin(this.properties.fov, this.player.sprite)) {
-            this.follow(this.player.sprite, this.properties.velocity);
-        } else {
-            this.sprite.body.velocity.x = 0;
-            this.sprite.body.velocity.y = 0;
-        }
-    },
+    game.physics.arcade.overlap(this, this.player, this.damage, null, this);
+};
+
+Skall.prototype.idle = function () {
+    if (this.isWithin(this.properties.leapFov, this.player)) {
+        this.follow(this.player, this.properties.velocityCharge);
+    } else if (this.isWithin(this.properties.fov, this.player)) {
+        this.follow(this.player, this.properties.velocity);
+    } else {
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+    }
+};
+
+Skall.prototype.follow = function (destinationSprite, speed) {
+    game.physics.arcade.moveToObject(this, destinationSprite, speed);
+};
+
+Skall.prototype.isWithin = function (distance, destinationSprite) {
+    if (game.physics.arcade.distanceBetween(this, destinationSprite) <= distance) {
+        return true;
+    }
     
-    follow: function (destinationSprite, speed) {
-        game.physics.arcade.moveToObject(this.sprite, destinationSprite, speed);
-    },
-    
-    isWithin: function (distance, destinationSprite) {
-        if (game.physics.arcade.distanceBetween(this.sprite, destinationSprite) <= distance) {
-            return true;
-        }
+    return false;
+};
+
+Skall.prototype.damage = function (hitter, hitee) {
+    if (this.properties.canDamage) {
+        this.properties.canDamage = false;
         
-        return false;
-    },
-}
+        hitee.takeDamage(this.properties.damage);
+        
+        game.time.events.add(this.properties.canDamageTimer, function () { this.properties.canDamage = true }, this);
+    }
+};
+
+Skall.prototype.takeDamage = function (damage) {
+    this.properties.health -= damage;
+    
+    if (this.properties.health <= 0) {
+        this.kill();
+    }
+    console.log("Skall: " + this.properties.health)
+};
