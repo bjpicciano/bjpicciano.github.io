@@ -1,6 +1,6 @@
 var gameProperties = {
     screenWidth: 800,
-    screenHeight: 608,
+    screenHeight: 600,
     
     padding: 0,
     
@@ -8,7 +8,7 @@ var gameProperties = {
 };
 
 var states = {
-    start: "",
+    start: undefined,
     main: "main",
     level1: "level1",
     level2: "level2",
@@ -34,6 +34,7 @@ var color = {
 
 var graphicAssets = {
     //sprites
+    main: {URL:'assets/main.png', name:'main'},
     background: {URL:'assets/background.png', name:'background'},
     player: {URL:'assets/player.png', name:'player'},
     playerAnim: {URL:'assets/playerAnim.png', name:'playerAnim'},
@@ -43,6 +44,7 @@ var graphicAssets = {
     brick: {URL:'assets/brick.png', name:'brick'},
     skall: {URL:'assets/skall.png', name:'skall'},
     fonkey: {URL:'assets/fonkey.png', name:'fonkey'},
+    dandelion: {URL:'assets/dandelion.png', name:'dandelion'},
     
     //tilemaps
     protoTiles: {URL:'assets/protoTiles.png', name:'protoTiles'},

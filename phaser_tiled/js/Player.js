@@ -17,6 +17,7 @@ var Player = function (game, x, y, key, frame) {
         velocitySprint: 350,
         velocity: undefined,
         invincibleTime: 200,
+        deathTime: 1350,
         healthMax: 10,
         health: undefined,
         canTakeDamage: true,
@@ -97,10 +98,19 @@ Player.prototype.takeDamage = function (damage) {
         startState.spawnY = undefined;
         startState.playerProperties = undefined;
         
-        game.state.start(states.start, true);
+        this.kill();
+        
+        game.time.events.add(this.properties.deathTime, function () { game.state.start(states.start, true); }, this);
     }
 };
 
+Player.prototype.takeHeal = function (health) {
+    this.properties.health += health;
+    
+    if (this.properties.health > this.properties.healthMax) {
+        this.properties.health = this.properties.healthMax;
+    }
+}
 function initKeyboard (self) {
     self.keys.key_left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     self.keys.key_right = game.input.keyboard.addKey(Phaser.Keyboard.D);
