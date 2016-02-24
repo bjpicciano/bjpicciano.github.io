@@ -1,7 +1,7 @@
 var Player = function (game, x, y, key, frame) {
     if (x == undefined) { x = game.world.randomX; }
     if (y == undefined) { y = game.world.randomY; }
-    if (key == undefined) { key = graphicAssets.player.name; }
+    if (key == undefined) { key = graphicAssets.playerAnim.name; }
     
     //call the Phaser.Sprite passing in the game reference
     Phaser.Sprite.call(this, game, x, y, key);
@@ -11,17 +11,21 @@ var Player = function (game, x, y, key, frame) {
     this.addChild(this.swordSprite);
     
     game.camera.follow(this);
-    //does collide with world's bounds
-    // game.camera.bounds = false;
     
     this.properties = {
         velocityStart: 235,
         velocitySprint: 350,
         velocity: undefined,
         invincibleTime: 200,
-        health: 5,
+        healthMax: 10,
+        health: undefined,
         canTakeDamage: true,
     };
+    this.properties.health = this.properties.healthMax;
+
+    this.healthbar = new Healthbar(game, 0, -27, undefined, undefined);
+    this.healthbar.attachParent(this);
+    this.addChild(this.healthbar);
 
     game.add.existing(this);
     
@@ -44,23 +48,28 @@ Player.prototype.updatePhysics = function () {
 };
 
 Player.prototype.checkPlayerInput = function () {
-    if ((game.state.getCurrentState().keys.key_up.isDown) && (this.y >= -gameProperties.padding)) {           //Up  W
+    //up
+    if ((game.state.getCurrentState().keys.key_up.isDown) && (this.y >= -gameProperties.padding)) {
         this.body.velocity.y = -this.properties.velocity;
-    } else if ((game.state.getCurrentState().keys.key_down.isDown) && (this.y <= game.world.height + gameProperties.padding)) {  //Down  D
+    //down
+    } else if ((game.state.getCurrentState().keys.key_down.isDown) && (this.y <= game.world.height + gameProperties.padding)) {
         this.body.velocity.y = this.properties.velocity;
     } else {
         this.body.velocity.y = 0;
     }
-
-    if ((game.state.getCurrentState().keys.key_right.isDown) && (this.x <= game.world.width + gameProperties.padding)) {        //Right  D
+    //right
+    if ((game.state.getCurrentState().keys.key_right.isDown) && (this.x <= game.world.width + gameProperties.padding)) {
         this.body.velocity.x = this.properties.velocity;
-    } else if ((game.state.getCurrentState().keys.key_left.isDown) && (this.x >= -gameProperties.padding)) {  //Left  A
+        this.loadTexture(graphicAssets.player.name);
+    //left
+    } else if ((game.state.getCurrentState().keys.key_left.isDown) && (this.x >= -gameProperties.padding)) {
         this.body.velocity.x = -this.properties.velocity;
+        this.loadTexture(graphicAssets.playerAnim.name);
     } else {
         this.body.velocity.x = 0;
     }
-
-    if (game.state.getCurrentState().keys.key_sprint.isDown) {      //shift
+    //shift
+    if (game.state.getCurrentState().keys.key_sprint.isDown) {
         this.properties.velocity = this.properties.velocitySprint;
     } else {
         this.properties.velocity = this.properties.velocityStart;
@@ -82,7 +91,6 @@ Player.prototype.takeDamage = function (damage) {
         
     if (this.properties.health <= 0) {
 
-        var currentState = game.state.getCurrentState();
         var startState = game.state.states[states.start];
         
         startState.spawnX = undefined;
@@ -115,5 +123,7 @@ function initPlayer (self, x, y, playerProperties) {
         self.player = playerGroup.getFirstExists();
     }
     
-    if (playerProperties != undefined){ self.player.properties = playerProperties; }
+    if (playerProperties != undefined) {
+        self.player.properties = playerProperties;
+    }
 };

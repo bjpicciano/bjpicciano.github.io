@@ -13,16 +13,18 @@ var Skall = function (game, x, y, key, frame) {
         startY: y,
         velocityWalk: 60,
         velocityCharge: 310 + game.rnd.integerInRange(-50, 25),
-        // velocityLeap: 600,
         velocity: 100 + game.rnd.integerInRange(-15, 15),
-        fov: 250,
-        leapFov: 70,
+        fov: 250 + game.rnd.integerInRange(-50, 25),
+        leapFov: 75 + game.rnd.integerInRange(-40, 25),
         damage: 1,
+        healthMax: 5,
         health: 5,
         canDamage: true,
         canDamageTimer: 200,
         roamer: game.rnd.integerInRange(0, 4), // 1/4 chance of being a roamer
     };
+    
+    this.healthbar = attachHealthbar(this);
 
     game.add.existing(this);
     
@@ -119,6 +121,7 @@ Skall.prototype.takeDamage = function (damage) {
     this.properties.health -= damage;
     
     if (this.properties.health <= 0) {
-        this.kill();
+        // this.healthbar.kill();
+        this.destroy();
     }
 };

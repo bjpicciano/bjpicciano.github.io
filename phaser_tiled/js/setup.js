@@ -36,6 +36,8 @@ var graphicAssets = {
     //sprites
     background: {URL:'assets/background.png', name:'background'},
     player: {URL:'assets/player.png', name:'player'},
+    playerAnim: {URL:'assets/playerAnim.png', name:'playerAnim'},
+    healthbar: {URL:'assets/healthbar.png', name:'healthbar'},
     sword: {URL:'assets/sword.png', name:'sword'},
     tree: {URL:'assets/tree.png', name:'tree'},
     brick: {URL:'assets/brick.png', name:'brick'},
@@ -44,8 +46,9 @@ var graphicAssets = {
     
     //tilemaps
     protoTiles: {URL:'assets/protoTiles.png', name:'protoTiles'},
-    level1: {URL:'states/json/protoLevel2.json', name:'level1'},
-    level3: {URL:'states/json/protoLevel.json', name:'level3'},
+    level1: {URL:'states/json/protoLevel.json', name:'level1'},
+    level2: {URL:'states/json/protoLevel2.json', name:'level2'},
+    level3: {URL:'states/json/protoLevel3.json', name:'level3'},
 };
 
 var fontAssets = {
