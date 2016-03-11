@@ -9,19 +9,20 @@ var Skall = function (game, x, y, key, frame) {
     // this.anchor.setTo(0.5, 0.5);
 
     this.properties = {
+        hitboxSize: 30,
         startX: x,
         startY: y,
         velocityWalk: 60,
         velocityCharge: 310 + game.rnd.integerInRange(-50, 40),
         velocity: 100 + game.rnd.integerInRange(-15, 15),
-        fov: 250 + game.rnd.integerInRange(-50, 25),
+        fov: 150 + game.rnd.integerInRange(-50, 25),
         leapFov: 75 + game.rnd.integerInRange(-40, 25),
         damage: 1,
         healthMax: 5,
         health: 5,
         canDamage: true,
         canDamageTimer: 200,
-        roamer: game.rnd.integerInRange(0, 4), // 1/4 chance of being a roamer
+        roamer: game.rnd.integerInRange(0, 5), // 1/5 chance of being a roamer
     };
     
     this.healthbar = attachHealthbar(this);
@@ -29,6 +30,7 @@ var Skall = function (game, x, y, key, frame) {
     game.add.existing(this);
     
     game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.body.setSize(this.properties.hitboxSize, this.properties.hitboxSize, 0);
 };
 
 Skall.prototype = Object.create(Phaser.Sprite.prototype);
@@ -38,7 +40,7 @@ Skall.prototype.update = function () {
     this.updatePhysics();
     
     if (this.player != undefined) {
-        if (this.properties.roamer == 0) {
+        if (this.properties.roamer == 1) {
             this.roam();
         } else {
             this.idle();
@@ -66,20 +68,24 @@ Skall.prototype.roam = function () {
     if (this.isWithin(this.properties.fov, this.player)) {
         this.pursue();
     } else {
+        //if it doesn't have a destination points, grab a random integer within 500
         if (this.xp == undefined && this.yp == undefined) {
             var x = this.x + game.rnd.integerInRange(-500, 500);
             var y = this.y + game.rnd.integerInRange(-500, 500);
             
+            //checks to see if it's in the world's bounds
             if ((x >= 0 && y >= 0) && (x <= game.world.width && y <= game.world.height)) {
                 this.xp = x;
                 this.yp = y;
             };
         }
 
+        //if we have destination points, move to it
         if (this.xp && this.yp) {
             game.physics.arcade.moveToXY(this, this.xp, this.yp, this.properties.velocityWalk);
         }
         
+        //if we're within 10, find somewhere else to go
         if (game.physics.arcade.distanceToXY(this, this.xp, this.yp) <= 10) {
             this.xp = undefined;
             this.yp = undefined;

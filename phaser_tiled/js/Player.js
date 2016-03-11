@@ -7,12 +7,28 @@ var Player = function (game, x, y, key, frame) {
     Phaser.Sprite.call(this, game, x, y, key);
     this.anchor.setTo(0.5, 0.5);
     
-    this.swordSprite = new Sword(game, 0, 0, undefined, undefined);
-    this.addChild(this.swordSprite);
+    this.weaponList = [],
+    this.weapon = new Sword(game, 0, 0, undefined, undefined);
+    this.addChild(this.weapon);
+    this.weaponList.push(this.weapon);
+
+    var bow = new Bow(game, 0, 0, undefined, undefined);
+    this.addChild(bow);
+    this.weaponList.push(bow);
+    
+    this.bombSprite = new Bomb(game, 0, 0, undefined, undefined);
     
     game.camera.follow(this);
     
+    this.switches = {
+        key_q: false,
+        key_attack: false,
+    };
+    
     this.properties = {
+        hitboxSize: 25,
+        bombCount: 2,
+        arrowCount: 3,
         velocityStart: 235,
         velocitySprint: 350,
         velocity: undefined,
@@ -21,6 +37,8 @@ var Player = function (game, x, y, key, frame) {
         healthMax: 10,
         health: undefined,
         canTakeDamage: true,
+        switchInterval: 0,
+        switchDelay: 200,
     };
     this.properties.health = this.properties.healthMax;
 
@@ -31,8 +49,7 @@ var Player = function (game, x, y, key, frame) {
     game.add.existing(this);
     
     game.physics.enable(this, Phaser.Physics.ARCADE);
-    
-    game.input.onDown.add(this.attack, this);
+    this.body.setSize(this.properties.hitboxSize, this.properties.hitboxSize, 0);
 };
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -41,7 +58,7 @@ Player.prototype.constructor = Player;
 Player.prototype.update = function () {
     this.updatePhysics();
     this.checkPlayerInput();
-    this.swordSprite.update();
+    this.weapon.update();
 };
 
 Player.prototype.updatePhysics = function () {
@@ -75,15 +92,23 @@ Player.prototype.checkPlayerInput = function () {
     } else {
         this.properties.velocity = this.properties.velocityStart;
     }
-};
-
-Player.prototype.attack = function (destinationSprite, speed) {
-    if (game.time.now > this.swordSprite.properties.attackInterval) {
-        var angleToPointer = game.physics.arcade.angleToPointer(this);
-
-        this.swordSprite.appear(angleToPointer);
-
-        this.swordSprite.properties.attackInterval = game.time.now + this.swordSprite.properties.attackDelay;
+    //attack
+    if (game.state.getCurrentState().keys.key_attack.isDown && this.switches.key_attack) {
+        this.switches.key_attack = false;
+        this.weapon.attack();
+    } if (game.state.getCurrentState().keys.key_attack.isUp) {
+        this.switches.key_attack = true;
+    }
+    //x
+    if (game.state.getCurrentState().keys.key_x.isDown) {
+        this.bombSprite.attack();
+    }
+    //q
+    if (game.state.getCurrentState().keys.key_q.isDown && this.switches.key_q) {
+        this.switches.key_q = false;
+        this.switchWeapons();
+    } if (game.state.getCurrentState().keys.key_q.isUp) {
+        this.switches.key_q = true;
     }
 };
 
@@ -91,15 +116,9 @@ Player.prototype.takeDamage = function (damage) {
     this.properties.health -= damage;
         
     if (this.properties.health <= 0) {
-
-        var startState = game.state.states[states.start];
-        
-        startState.spawnX = undefined;
-        startState.spawnY = undefined;
-        startState.playerProperties = undefined;
+        resetNextStateSpawns(states.start)
         
         this.kill();
-        
         game.time.events.add(this.properties.deathTime, function () { game.state.start(states.start, true); }, this);
     }
 };
@@ -111,6 +130,26 @@ Player.prototype.takeHeal = function (health) {
         this.properties.health = this.properties.healthMax;
     }
 }
+
+Player.prototype.switchWeapons = function () {
+    if (game.time.now > this.properties.switchInterval) {
+        var index = this.weaponList.indexOf(this.weapon)
+        if (index >= this.weaponList.length - 1) {
+            index = 0;
+        } else {
+            index++;
+        }
+
+        this.weapon = this.weaponList[index];
+        
+        var angle;// = game.physics.arcade.angleToPointer(this);
+        this.weapon.appear(angle);
+
+        this.properties.switchInterval = game.time.now + this.properties.switchDelay;
+        this.weapon.properties.attackInterval = game.time.now + this.weapon.properties.attackDelay;
+    }
+}
+
 function initKeyboard (self) {
     self.keys.key_left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     self.keys.key_right = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -118,7 +157,11 @@ function initKeyboard (self) {
     self.keys.key_down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     self.keys.key_sprint = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
     self.keys.key_control = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    self.keys.key_attack = game.input.activePointer;
+    self.keys.key_x = game.input.keyboard.addKey(Phaser.Keyboard.X);
+    self.keys.key_use = game.input.keyboard.addKey(Phaser.Keyboard.E);
+    self.keys.key_q = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+    self.keys.key_attack = game.input.activePointer.leftButton;
+    
     
     game.input.resetLocked = true;
 };

@@ -16,9 +16,9 @@ var Sword = function (game, x, y, key, frame) {
         //the time the sword appears for
         attackLifespan: 200,
         //the distance away from the parent
-        attackDistance: 35,
+        distanceFrom: 34,
         //the size of the sword's hitbox
-        hitboxSize: 24,
+        hitboxSize: 20,
         damage: 3,
         //boolean to determine if it can damage another sprite
         canDamage: true,
@@ -36,9 +36,21 @@ Sword.prototype.update = function () {
     game.physics.arcade.overlap(this, game.state.getCurrentState().enemies, this.damage, null, this);
 };
 
+//the player calls this and makes THIS the player for some reason
+Sword.prototype.attack = function () {
+    if (game.time.now > this.properties.attackInterval) {
+        var player = game.state.getCurrentState().player;
+        var angleToPointer = game.physics.arcade.angleToPointer(player);
+
+        this.appear(angleToPointer);
+
+        this.properties.attackInterval = game.time.now + this.properties.attackDelay;
+    }
+}
+
 Sword.prototype.appear = function (angleToPointer) {
-    var x = Math.cos(angleToPointer) * this.properties.attackDistance;
-    var y = Math.sin(angleToPointer) * this.properties.attackDistance;
+    var x = Math.cos(angleToPointer) * this.properties.distanceFrom;
+    var y = Math.sin(angleToPointer) * this.properties.distanceFrom;
     
     this.reset(x, y);
 
@@ -53,7 +65,9 @@ Sword.prototype.appear = function (angleToPointer) {
 
 Sword.prototype.disappear = function () {
     this.kill();
-    this.body.destroy();
+    if (this.body != undefined) {
+        this.body.destroy();
+    }
 };
 
 Sword.prototype.damage = function (hitter, hitee) {
@@ -65,3 +79,4 @@ Sword.prototype.damage = function (hitter, hitee) {
         game.time.events.add(this.properties.canDamageTimer, function () { this.properties.canDamage = true }, this);
     }
 };
+

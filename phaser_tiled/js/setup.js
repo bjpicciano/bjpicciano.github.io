@@ -9,21 +9,9 @@ var gameProperties = {
 
 var states = {
     start: undefined,
-    main: "main",
-    level1: "level1",
-    level2: "level2",
-    level3: "level3",
-    level4: "level4",
-    level5: "level5",
-    level6: "level6",
-    level7: "level7",
-    level8: "level8",
-    level9: "level9",
-    level10: "level10",
-    level11: "level11",
-    level12: "level12",
     
-    levels: [],
+    firstLevels: undefined,
+    secondLevels: undefined,
 };
 
 var color = {
@@ -40,18 +28,36 @@ var graphicAssets = {
     playerAnim: {URL:'assets/playerAnim.png', name:'playerAnim'},
     healthbar: {URL:'assets/healthbar.png', name:'healthbar'},
     sword: {URL:'assets/sword.png', name:'sword'},
+    bow: {URL:'assets/bow.png', name:'bow'},
+    arrow: {URL:'assets/arrow.png', name:'arrow'},
+    bomb: {URL:'assets/bomb.png', name:'bomb'},
     tree: {URL:'assets/tree.png', name:'tree'},
     brick: {URL:'assets/brick.png', name:'brick'},
+    destructableBrick: {URL:'assets/destructableBrick.png', name:'destructableBrick'},
     skall: {URL:'assets/skall.png', name:'skall'},
     fonkey: {URL:'assets/fonkey.png', name:'fonkey'},
     dandelion: {URL:'assets/dandelion.png', name:'dandelion'},
-    
-    //tilemaps
     protoTiles: {URL:'assets/protoTiles.png', name:'protoTiles'},
-    level1: {URL:'states/json/protoLevel.json', name:'level1'},
-    level2: {URL:'states/json/protoLevel2.json', name:'level2'},
-    level3: {URL:'states/json/protoLevel3.json', name:'level3'},
 };
+
+var dungeonAssets = {
+    easyForestPathDungeon: {URL:'states/json/easyForestPathDungeon.json', name:'easyForestPathDungeon'},
+}
+
+var firstMapAssets = {
+    // forest1: {URL:'states/json/prototypes/protoLevel.json', name:'forest1'},
+    // house: {URL:'states/json/prototypes/protoLevel2.json', name:'house'},
+    // arena: {URL:'states/json/prototypes/protoLevel3.json', name:'arena'},
+    // gateTransition: {URL:'states/json/prototypes/gateTransition.json', name:'gateTransition'},
+    easyForestVillage: {URL:'states/json/easyForestVillage.json', name:'easyForestVillage'},
+    easyForestPath: {URL:'states/json/easyForestPath.json', name:'easyForestPath'},
+    easyMountain: {URL:'states/json/easyMountain.json', name:'easyMountain'},
+};
+
+var secondMapAssets = {
+    medium1: {URL:'states/json/medium1.json', name:'medium1'},
+    medium2: {URL:'states/json/medium2.json', name:'medium2'},
+}
 
 var fontAssets = {
     counterFontStyle:{font: '20px Arial', fill: '#FFFFFF', align: 'center'},

@@ -4,6 +4,7 @@ function Level (game, tilemap, color, debug) {
     
     this.enemies;
     this.items;
+    this.destructables;
     
     this.player;
     this.playerProperties;
@@ -13,6 +14,7 @@ function Level (game, tilemap, color, debug) {
     this.map;
     this.tilemap = tilemap;
     this.layer = {};
+    this.zones;
     
     this.edgeUp;
     this.edgeDown;
@@ -36,11 +38,19 @@ Level.prototype = {
     
     render: function () {
         if (this.debug) {
-            game.debug.spriteInfo(this.player.swordSprite, 32, 32);
             game.debug.body(this.player);
-            game.debug.body(this.player.swordSprite);
+            game.debug.body(this.player.weapon);
+            game.debug.body(this.player.bombSprite);
             
             this.enemies.forEachAlive(function (member) {
+                game.debug.body(member);
+                }, this);
+                
+            this.items.forEachAlive(function (member) {
+                game.debug.body(member);
+                }, this);
+                
+            this.destructables.forEachAlive(function (member) {
                 game.debug.body(member);
                 }, this);
         }
@@ -56,7 +66,13 @@ Level.prototype = {
     
     update: function () {
         this.checkBoundaries();
-        // console.log(game.time.fps)
+        
+        for (var obj in this.zones) {
+            var zone = this.zones[obj];
+            if (zone.area.contains(this.player.x, this.player.y)) {
+                this.chooseZoneAction(zone);
+            }
+        }
     },
     
     collision: function (hitter, hitee) {
@@ -89,9 +105,14 @@ Level.prototype = {
     },
     
     initEntities: function () {
+        this.destructables = game.add.group();
+        this.map.createFromObjects('destructable', 13, graphicAssets.destructableBrick.name, 0, true, false, this.destructables, Destructable);
+        
         this.items = game.add.group();
         this.map.createFromObjects('item', 21, graphicAssets.dandelion.name, 0, true, false, this.items, Food);
-         
+        this.map.createFromObjects('item', 26, graphicAssets.arrow.name, 0, true, false, this.items, ArrowPickup);
+        this.map.createFromObjects('item', 25, graphicAssets.bomb.name, 0, true, false, this.items, BombPickup);
+        
         initPlayer(this, this.spawnX, this.spawnY, this.playerProperties);
         
         this.enemies = game.add.group();
@@ -100,7 +121,16 @@ Level.prototype = {
     },
 
     initBackground: function () {
-        this.layer[3] = this.map.createLayer("above");
+        this.layer[2] = this.map.createLayer("above");
+        
+        if (this.zones == undefined) {
+            this.zones = [];
+            for (var obj in this.map.objects["zone"]) {
+                var zone = this.map.objects["zone"][obj]
+                zone.area = new Phaser.Rectangle(zone.x, zone.y, zone.width, zone.height);
+                this.zones.push(zone);
+            }
+        }
         
         this.backgroundSprite = game.add.sprite(0, 0, graphicAssets.background.name);
         this.backgroundSprite.width = game.world.width;
@@ -127,6 +157,23 @@ Level.prototype = {
                 this.edgeDown = stateData.returnState;
             }
         }
+    },
+    
+    chooseZoneAction: function (zone) {
+      if (zone.properties.nextState != undefined) {
+        var nextState = zone.properties.nextState;
+        
+        resetNextStateSpawns(nextState);
+        
+        var stateList = getLevelsList(nextState);
+        
+        var index = stateList.indexOf(nextState)
+        if (index >= 0) {
+            stateList.splice(index, 1)
+        }
+        
+        game.state.start(nextState, true, false, this.keys, undefined, this.player.properties);
+      }
     },
     
     checkBoundaries: function () {
@@ -205,13 +252,37 @@ Level.prototype = {
 };
 
 function getRemainingLevels () {
-    var randomLevelIndex = game.rnd.integerInRange(0, states.levels.length - 1);
-    var nextLevel = states.levels[randomLevelIndex];
-    states.levels.splice(randomLevelIndex, 1);
+    var stateList = getLevelsList();
+    
+    var randomLevelIndex = game.rnd.integerInRange(0, stateList.length - 1);
+    var nextLevel = stateList[randomLevelIndex];
+    stateList.splice(randomLevelIndex, 1);
    
     if (states.start == undefined) {
         states.start = nextLevel
     }
        
     return nextLevel;
+};
+
+function getLevelsList (state) {
+    if (state == undefined) { state = game.state.getCurrentState().key; }
+
+    var stateList = [];
+    
+    if (firstMapAssets[state] != undefined || state == 'main') {
+        stateList = states.firstLevels;
+    } else if (secondMapAssets[state] != undefined) {
+        stateList = states.secondLevels;
+    }
+    
+    return stateList;
+}
+
+function resetNextStateSpawns (nextStateName) {
+    var nextState = game.state.states[nextStateName];
+    
+    nextState.spawnX = undefined;
+    nextState.spawnY = undefined;
+    nextState.playerProperties = undefined;
 };
