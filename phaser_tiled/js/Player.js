@@ -160,7 +160,7 @@ function initKeyboard (self) {
     self.keys.key_x = game.input.keyboard.addKey(Phaser.Keyboard.X);
     self.keys.key_use = game.input.keyboard.addKey(Phaser.Keyboard.E);
     self.keys.key_q = game.input.keyboard.addKey(Phaser.Keyboard.Q);
-    self.keys.key_attack = game.input.activePointer.leftButton;
+    self.keys.key_attack = game.input.activePointer;
     
     
     game.input.resetLocked = true;
