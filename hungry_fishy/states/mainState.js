@@ -24,7 +24,7 @@ mainState.prototype = {
          this.image.width = game.world.width;
          this.image.height = game.world.height;
         
-        var startInstructions = 'W\nA    S    D\n\n\n click to start';
+        var startInstructions = 'Eat smaller fish to grow\n\nW\nA    S    D\n\n click to start';
 
         this.tf_start = game.add.text(game.world.centerX, game.world.centerY, startInstructions, fontAssets.counterFontStyle);
         this.tf_start.anchor.set(0.5, 0.5);

@@ -52,17 +52,26 @@ Fish.prototype.update = function () {
 
 Fish.prototype.updatePhysics = function () {
     this.checkBoundaries();
+    if (this.body.velocity.x > 0) {
+        this.flipSpriteRight()
+    }
+};
+
+Fish.prototype.flipSpriteRight = function () {
+    if (this.scale.x == this.properties.size) {
+        this.scale.x *= -1;
+    }
 };
 
 Fish.prototype.checkBoundaries = function () {
     if (this.x + this.width < 0) {
-        this.destroy();
+        this.kill();
     } else if (this.x - this.width > game.width) {
-        this.destroy();
+        this.kill();
     }
     if (this.y + this.height < 0) {
-        this.destroy();
+        this.kill();
     } else if (this.y - this.height > game.height) {
-        this.destroy();
+        this.kill();
     }
 };
