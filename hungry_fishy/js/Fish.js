@@ -66,7 +66,7 @@ Fish.prototype.flipSpriteRight = function () {
 Fish.prototype.checkBoundaries = function () {
     if (this.x + this.width < 0) {
         this.kill();
-    } else if (this.x - this.width > game.width) {
+    } else if (this.x + this.width > game.width) {
         this.kill();
     }
     if (this.y + this.height < 0) {
