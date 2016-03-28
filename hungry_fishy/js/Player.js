@@ -14,7 +14,8 @@ var Player = function (game, x, y, key, frame) {
         key_left : game.input.keyboard.addKey(Phaser.Keyboard.A),
         key_right : game.input.keyboard.addKey(Phaser.Keyboard.D),
         key_up : game.input.keyboard.addKey(Phaser.Keyboard.W),
-        key_down : game.input.keyboard.addKey(Phaser.Keyboard.S)
+        key_down : game.input.keyboard.addKey(Phaser.Keyboard.S),
+        key_click : game.input.activePointer,
     };
 
     this.properties = {
@@ -40,6 +41,11 @@ Player.prototype.update = function () {
 };
 
 Player.prototype.updatePhysics = function () {
+    if (this.body.velocity.x > 0) {
+        this.flipSpriteRight();
+    } else if (this.body.velocity.x < 0) {
+        this.flipSpriteLeft();
+    }
 };
 
 Player.prototype.grow = function () {
@@ -48,10 +54,13 @@ Player.prototype.grow = function () {
 };
 
 Player.prototype.checkPlayerInput = function () {
+    if (this.keys.key_click.isDown) {
+        game.physics.arcade.moveToPointer(this, this.properties.velocity);
+    } else {
         //up
         if (this.keys.key_up.isDown) {
             this.body.velocity.y = -this.properties.velocity;
-        //down
+            //down
         } else if (this.keys.key_down.isDown) {
             this.body.velocity.y = this.properties.velocity;
         } else {
@@ -60,14 +69,13 @@ Player.prototype.checkPlayerInput = function () {
         //right
         if (this.keys.key_right.isDown) {
             this.body.velocity.x = this.properties.velocity;
-            this.flipSpriteRight();
-        //left
+            //left
         } else if (this.keys.key_left.isDown) {
             this.body.velocity.x = -this.properties.velocity;
-            this.flipSpriteLeft();
         } else {
             this.body.velocity.x = 0;
         }
+    }
 };
 
 Player.prototype.flipSpriteLeft = function () {
